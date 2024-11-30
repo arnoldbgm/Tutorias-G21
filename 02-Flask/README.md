@@ -20,10 +20,10 @@ python -m venv venv
     ```
 
 
-### 3. Instalar Flask y todo lo del proyecto 🛠️
+### 3. Instalar Flask 🛠️
 
 ```bash
-pip install -r requirements.txt
+pip install flask   
 ```
 
 ### 4. Crear un archivo `app.py` 📄
@@ -45,11 +45,19 @@ if __name__ == '__main__':
 ### 5. Ejecutar la aplicación ▶️
 
 ```bash
+# Puedo levantar mi servidor con esto
 python app.py
+# Tambien lo puedo levantar de esta forma
+flask run
 
 ```
 
-### 6. Crear el archivo `db.py` 📂
+### 6. Crear el archivo `db.py` 📂 y configuramos SQLAlchemy
+```
+pip install -U Flask-SQLAlchemy
+```
+> [!TIP]
+> Creamos el archivo `db.py` para centralizar la instancia de `SQLAlchemy` y facilitar su importación y reutilización en diferentes partes del proyecto Flask. Esto asegura una estructura limpia y modular, permitiendo que otros módulos (como modelos o rutas) accedan a la base de datos sin redundancia en el código.
 
 ```python
 from flask_sqlalchemy import SQLAlchemy
@@ -60,6 +68,13 @@ db = SQLAlchemy()
 
 ### 7. Conectar a una base de datos con Flask-SQLAlchemy 🔗
 
+> [!IMPORTANT]
+> Antes de poder conectarnos a la bd, debemos de tener Flask Migrate instalado y configurado
+
+```
+pip install Flask-Migrate psycopg2-binary
+```
+
 ```python
 from flask import Flask
 from db import db
@@ -67,7 +82,7 @@ from sqlalchemy import Column, Integer, String
 from flask_migrate import Migrate
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:my_password@localhost:5432/punto_de_venta'
 
 db.init_app(app)
 migrate = Migrate(app, db)
