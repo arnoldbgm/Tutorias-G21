@@ -2,7 +2,8 @@
 
 ```bash
 python -m venv venv
-
+# Solo si no funciona el creado
+python -m venv venv --without-pip
 ```
 
 ### 2. Activar el entorno virtual ⚡
@@ -23,10 +24,13 @@ python -m venv venv
 ### 3. Instalar Flask 🛠️
 
 ```bash
-pip install flask   
+pip install flask 
+# Para verificiar si se instalao
+pip list 
 ```
 
 ### 4. Crear un archivo `app.py` 📄
+Debemos de partir creando un archivo llamado `app.py` ahi es donde es iniciara nuestro servidor
 
 ```python
 from flask import Flask
@@ -52,7 +56,7 @@ flask run
 
 ```
 
-### 6. Crear el archivo `db.py` 📂 y configuramos SQLAlchemy
+### 6. Configuracion de SQLAlchemy
 ```
 pip install -U Flask-SQLAlchemy
 ```
@@ -61,9 +65,24 @@ pip install -U Flask-SQLAlchemy
 
 ```python
 from flask_sqlalchemy import SQLAlchemy
-
 db = SQLAlchemy()
+```
 
+Ahora llamaremos a nuestro archivo `db.py` en nuestro `app.py`
+
+
+```py
+from flask import Flask
+from db import db
+
+# Debo ejecutarlo (instanciarlo)
+app = Flask(__name__)
+
+# Ejecutamos SQLAlchemy 
+db.init_app(app)
+
+if __name__ == '__main__':
+   app.run(debug=True)
 ```
 
 ### 7. Conectar a una base de datos con Flask-SQLAlchemy 🔗
@@ -106,7 +125,7 @@ if __name__ == '__main__':
 
 ### 9. Ejecutar la migración 🚀
 
-- **Crear la carpeta `migrations` (Solo la primera vez)**:
+- **Ejecutar la instancia de las migraciones**:
     
     ```bash
     flask db init
@@ -124,7 +143,6 @@ if __name__ == '__main__':
     
     ```bash
     flask db upgrade
-    
     ```
     
 
