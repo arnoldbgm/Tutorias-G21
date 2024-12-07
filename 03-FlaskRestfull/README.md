@@ -129,6 +129,31 @@ if __name__ == '__main__':
 ### 8. Creacion de la base de datos
 ![image](https://github.com/user-attachments/assets/c012b723-031e-4ab3-a941-af7c64163154)
 
+> [!TIP]
+> Si deseas puedes insertar esta data para que practiques tus consultas
+```SQL
+-- Insertar datos en la tabla Categoria
+INSERT INTO Categoria (nombre) VALUES
+('Acción'),
+('Comedia'),
+('Drama'),
+('Ciencia Ficción'),
+('Terror');
+
+-- Insertar datos en la tabla Pelicula
+INSERT INTO Pelicula (titulo, anio, duracion, categoria_id) VALUES
+('Mad Max: Fury Road', 2015, 120, 1),
+('Deadpool', 2016, 108, 1),
+('Superbad', 2007, 113, 2),
+('The Hangover', 2009, 100, 2),
+('The Shawshank Redemption', 1994, 142, 3),
+('Forrest Gump', 1994, 144, 3),
+('Inception', 2010, 148, 4),
+('Interstellar', 2014, 169, 4),
+('The Conjuring', 2013, 112, 5),
+('Get Out', 2017, 104, 5);
+```
+
 ### 9. Ejecutar la migración 🚀
 
 - **Ejecutar la instancia de las migraciones**:
