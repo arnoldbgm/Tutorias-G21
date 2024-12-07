@@ -123,6 +123,9 @@ if __name__ == '__main__':
 
 ```
 
+> [!IMPORTANT]
+> Antes soliamos crear todas las tablas principales dentro del archivo ahora lo crearemos en el la carpeta ``models`` 📂 si lo hiciste aqui en el ``app`` no te preocupes, lo migraremos a la carpeta ``models``
+
 ### 8. Creacion de la base de datos
 ![Bd](https://github.com/user-attachments/assets/4d7782ba-62e0-4148-88c9-7674e17e3d41)
 
