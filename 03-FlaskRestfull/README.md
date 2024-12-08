@@ -175,7 +175,26 @@ INSERT INTO Pelicula (titulo, anio, duracion, categoria_id) VALUES
     ```bash
     flask db upgrade
     ```
-    
+---
+## Al final nuestro archivo ``app.py`` debe de verse de esta manera
+
+```py
+from flask import Flask
+from db import db
+# Esto me permite controlar las migraciones
+from flask_migrate import Migrate
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:root@localhost:5432/db_pos'
+
+db.init_app(app)
+migrate = Migrate(app, db)
+
+# Este es mi archivo principal, estamos en modo de prueba
+if __name__ == '__main__':
+   app.run(debug=True)
+```
+
 ### 10. Crearemos las carpetas `models` y `controllers`📂 
 
 Tu estructura de carpetas se debe de ver de la siguiente forma
@@ -183,7 +202,92 @@ Tu estructura de carpetas se debe de ver de la siguiente forma
 ```markdown
 .
 ├── controllers
-│   └── products.py
+│   └── categoria.py
+│   └── peliculas.py
 ├── models
-    └── products.py
+    └── categoria.py
+    └── peliculas.py
 ``` 
+Dentro de nuestro ``models.categorias.py`` debe ir el modelado de nuestra base de datos, lo mismo debes de hacer para ``models.pelicula.py``
+
+```py
+# Para crear la tabla de mi base de datos
+# Paso 01: Debo de importar
+from db import db
+from sqlalchemy import Column, Integer, String
+
+# Paso 02: Crear la tabla
+class CategoriasModel(db.Model):
+   # Colocamos el nombre de la tabla
+   __tablename__ = "categorias"
+
+   # Creamos las columnas
+   id = Column(Integer, primary_key=True)
+   nombre = Column(String)
+```
+
+Para poder lograr exportar todos tus modelos, tu debes de crear un archivo dentro  ``models.__init__.py``, esto se hace con el fin de poder exportar toda las clases (tablas) de la carpeta ``models``
+
+```py
+from .categoria import CategoriasModel
+from .pelicula import PeliculaModel
+```
+
+Para que ahora en tu ``app.py`` tu solo coloques 
+
+```py
+from flask import Flask
+from db import db
+from flask_migrate import Migrate
+from models import * #Tu con esto puede importar todas la tablas de tu carpeta models
+...
+```
+
+### 11. Trabajando con los controladores
+Los controladores se encargan de manipular toda la parte logica de mi aplicación.
+
+Como creamos un controlador:
+```py
+from db import db
+from models.categoria import  CategoriasModel
+from flask_restful import Resource
+from flask import request
+class CategoriasList(Resource):
+   def get(self):
+      resultado_consulta = CategoriasModel.query.all()
+      print(resultado_consulta)
+      return [
+         {
+            "id": categoria.id,
+            "nombre": categoria.nombre,
+         } for categoria in resultado_consulta
+      ], 200
+```
+Ahora vamos asociar este controlador a una ruta, nos vamos al archivo ``app.py`` y ahi colocamos lo siguiente
+
+```py
+...
+from flask_restful import Api
+from controllers.categoria import CategoriasList
+...
+# Crear mi API (Es solo una vez)
+api = Api(app)
+# Ascociar mis controladores a unas rutas
+# api.add_resource( El-nombre-controlador, ruta)
+api.add_resource(CategoriasList, "/categorias")
+
+```
+
+Para hacer un POST:
+
+```py
+class ProductPost(Resource):
+   def post(self):
+      data = request.get_json()
+      nuevo_categoria = CategoriasModel(**data)
+      db.session.add(nuevo_categoria)
+      db.session.commit()
+      return {
+         "message": "Creacion exitosa"
+      }, 201
+```
