@@ -278,7 +278,7 @@ api.add_resource(CategoriasList, "/categorias")
 
 ```
 
-Para hacer un POST:
+### Para hacer un POST:
 
 ```py
 class ProductPost(Resource):
@@ -290,4 +290,125 @@ class ProductPost(Resource):
       return {
          "message": "Creacion exitosa"
       }, 201
+```
+### **Para hacer un PUT:**
+
+El método `PUT` permite actualizar un registro existente en la base de datos. Por ejemplo, actualizar el nombre de una categoría.
+
+```python
+class CategoriaPut(Resource):
+   def put(self, id):
+      data = request.get_json()
+      categoria = CategoriasModel.query.get(id)
+      if not categoria:
+         return {"message": "Categoría no encontrada"}, 404
+
+      # Actualizar los valores
+      categoria.nombre = data.get("nombre", categoria.nombre)
+      db.session.commit()
+      return {
+         "message": "Categoría actualizada correctamente",
+         "categoria": {
+            "id": categoria.id,
+            "nombre": categoria.nombre
+         }
+      }, 200
+```
+
+Asociar el controlador `CategoriaPut` a una ruta en `app.py`:
+
+```python
+api.add_resource(CategoriaPut, "/categorias/<int:id>")
+```
+
+---
+
+### **Para hacer un DELETE:**
+
+El método `DELETE` permite eliminar un registro existente en la base de datos.
+
+```python
+py
+Copiar código
+class CategoriaDelete(Resource):
+   def delete(self, id):
+      categoria = CategoriasModel.query.get(id)
+      if not categoria:
+         return {"message": "Categoría no encontrada"}, 404
+
+      db.session.delete(categoria)
+      db.session.commit()
+      return {"message": "Categoría eliminada exitosamente"}, 200
+```
+
+Asociar el controlador `CategoriaDelete` a una ruta en `app.py`:
+
+```python
+api.add_resource(CategoriaDelete, "/categorias/<int:id>")
+```
+### **12. Instalación y configuración de CORS**
+
+CORS (Cross-Origin Resource Sharing) permite que tu API sea consumida desde diferentes orígenes, como aplicaciones frontend en distintos dominios.
+
+### **Instalación**
+
+Ejecuta el siguiente comando en tu terminal:
+
+```bash
+pip install flask-cors
+
+```
+### **Configuración básica**
+
+Abre tu archivo `app.py` y coloca lo siguiente:
+
+```py
+from flask import Flask
+# Importas los cors
+from flask_cors import CORS
+...
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:root@localhost:5432/db_pos'
+
+# Inicializar CORS debajo del app
+CORS(app)
+```
+
+### 13. Consumir nuestra API desde React 🚀
+Para consumir la API desde un frontend en React debes de utilizar `useEffect`, puedes hacerlo de la siguiente forma:
+
+```js
+import { useState, useEffect } from 'react';
+
+function App() {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:5000/categorias');
+        const result = await response.json();
+        setData(result);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []); 
+
+  return (
+    <div>
+      <h1>Lista de mis categorias</h1>
+      <ul>
+        {data.map((categoria) => (
+          <li key={categoria.id}>{categoria.name}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default App;
 ```
