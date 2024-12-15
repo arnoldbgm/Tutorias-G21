@@ -48,3 +48,36 @@ class CategoriaPost(Resource):
       return {
          "message": "Creacion exitosa"
       }, 201
+
+class CategoriaPut(Resource):
+   def put(self, id):
+      data = request.get_json()
+      categoria = CategoriasModel.query.get(id)
+      if not categoria:
+         return {
+            "message": "La categoria no existe"
+         }, 404
+      # La logica para poder actualizar un registro
+      categoria.nombre = data.get("nombre", categoria.nombre)
+      db.session.commit()
+      return{
+         "message": "Categoria actualizada",
+         "data":{
+            "id": categoria.id,
+            "nombre": categoria.nombre
+         }
+      }, 200
+   
+class CategoriaDelete(Resource):
+   def delete(self, id):
+      # Siempre se debe de verificar si existe o no la categoria
+      data = CategoriasModel.query.get(id)
+      if not data:
+         return {
+            "message": "La categoria no existe"
+         }, 404
+      db.session.delete(data)
+      db.session.commit()
+      return {
+         "message": "Categoria eliminada exitosamente"
+      }, 200
