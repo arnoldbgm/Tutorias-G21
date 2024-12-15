@@ -15,7 +15,7 @@ const App = () => {
   async function fetchData() {
     // Asi nosotros controlamos los errores
     try {
-      const response = await fetch("http://127.0.0.1:5000/categorias")
+      const response = await fetch("http://127.0.0.1:5000/peliculas")
       const result = await response.json()
       setData(result)
     } catch (error) {
@@ -28,8 +28,11 @@ const App = () => {
       <h1>Lista de Categorias</h1>
       <ul>
         {
-          data.map((categoria) => (
-            <li key={categoria.id} >{categoria.nombre}</li>
+          data.map((pelicula) => (
+            <li key={pelicula.id} >{pelicula.titulo} {pelicula.anio} {pelicula.duracion}
+            <img src={pelicula.imagen_url} />
+            </li>
+
           ))
         }
       </ul>
