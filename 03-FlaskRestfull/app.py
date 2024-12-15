@@ -20,9 +20,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:root@localhost:54
 CORS(app)
 
 cloudinary.config(
-    cloud_name="db6m1hsce",
-    api_key="795842694381899",
-    api_secret="wCL4TuIzgMreFCyw5YEENqj_LZo"
+    cloud_name="", #Aqui va tu cloud name
+    api_key="", # Aqui va tu api_key
+    api_secret="" # Aqui va tu api_secret
 )
 
 db.init_app(app)
