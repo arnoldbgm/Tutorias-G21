@@ -256,3 +256,4 @@ INSERT INTO tb_modelos (nombre, precio, stock, descripcion, id_producto) VALUES
 ('24" Full HD Curvo', 250.00, 18, 'Monitor curvo Samsung', 2);
 
 ```
+![image](https://github.com/user-attachments/assets/4e8bb01f-3610-42aa-8bb5-90f09be8edf4)
