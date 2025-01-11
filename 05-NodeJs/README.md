@@ -213,7 +213,7 @@ CREATE TABLE tb_modelos (
     precio NUMERIC(10, 2) NOT NULL,
     stock INT NOT NULL,
     descripcion TEXT,
-    id_producto INT NOT NULL REFERENCES tb_producto(id)
+    id_producto_marca INT NOT NULL REFERENCES tb_producto_marca(id)
 );
 
 ```
@@ -245,15 +245,15 @@ INSERT INTO tb_modelos (nombre, precio, stock, descripcion, id_producto) VALUES
 ('8GB RAM, 1TB HDD', 950.00, 12, 'Laptop básica', 1),
 ('16GB RAM, 512GB SSD', 1350.00, 5, 'Laptop para programadores', 1),
 -- HP Laptops
-('8GB RAM, 256GB SSD', 800.00, 20, 'Laptop económica', 1),
-('16GB RAM, 1TB SSD', 1200.00, 10, 'Laptop de alto rendimiento', 1),
+('8GB RAM, 256GB SSD', 800.00, 20, 'Laptop económica', 3),
+('16GB RAM, 1TB SSD', 1200.00, 10, 'Laptop de alto rendimiento', 3),
 -- Apple Laptop
-('M1 8GB, 256GB SSD', 1200.00, 8, 'MacBook Air M1', 1),
+('M1 8GB, 256GB SSD', 1200.00, 8, 'MacBook Air M1', 4),
 -- Dell Monitors
 ('24" Full HD', 200.00, 15, 'Monitor básico Dell', 2),
 ('27" 4K Ultra HD', 400.00, 10, 'Monitor profesional Dell', 2),
 -- Samsung Monitor
-('24" Full HD Curvo', 250.00, 18, 'Monitor curvo Samsung', 2);
+('24" Full HD Curvo', 250.00, 18, 'Monitor curvo Samsung', 5);
 
 ```
 ![image](https://github.com/user-attachments/assets/4e8bb01f-3610-42aa-8bb5-90f09be8edf4)
