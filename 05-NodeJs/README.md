@@ -258,3 +258,4 @@ INSERT INTO tb_modelos (nombre, precio, stock, descripcion, id_producto) VALUES
 ```
 ![image](https://github.com/user-attachments/assets/f1e68331-f2ef-461e-b9d8-39d351ff5ab5)
 
+https://dbdiagram.io/d/678300676b7fa355c398a965
