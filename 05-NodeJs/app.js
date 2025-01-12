@@ -72,107 +72,78 @@ app.get("/api/producto-marca", async (req, res) => {
 
 app.post("/api/modelos", async (req, res) => {
    /*
-  req.body
-  {
-    "nombre":"8GB RAM, 1TB HDD",
-    "precio": 5000,
-    "stock": 10,
-    "descripcion": "Buena laptop",
-    "marca": "Acer",
-    "producto": "Laptop"
-  }
-  */
+   req.body
+   {
+     "nombre": "8GB RAM, 1TB HDD",
+     "precio": 5000,
+     "stock": 10,
+     "descripcion": "Buena laptop",
+     "marca": "Acer",
+     "producto": "Laptop"
+   }
+   */
    try {
-      const {
+     const { nombre, precio, stock, descripcion, marca, producto } = req.body;
+ 
+     let newProductMarc = null;
+ 
+     // Verificar si la marca existe, y sino, crearla
+     let marcaUnica = await prisma.tb_marca.findUnique({
+       where: { nombre: marca },
+     });
+ 
+     if (!marcaUnica) {
+       marcaUnica = await prisma.tb_marca.create({
+         data: { nombre: marca },
+       });
+     }
+ 
+     // Verificar si el producto existe, y sino, crearlo
+     let productoUnico = await prisma.tb_producto.findUnique({
+       where: { nombre: producto },
+     });
+ 
+     if (!productoUnico) {
+       productoUnico = await prisma.tb_producto.create({
+         data: { nombre: producto },
+       });
+     }
+ 
+     // Verificar si la relación producto-marca existe, y sino, crearla
+     newProductMarc = await prisma.tb_producto_marca.findFirst({
+       where: {
+         id_marca: marcaUnica.id,
+         id_producto: productoUnico.id,
+       },
+     });
+ 
+     if (!newProductMarc) {
+       newProductMarc = await prisma.tb_producto_marca.create({
+         data: {
+           id_marca: marcaUnica.id,
+           id_producto: productoUnico.id,
+         },
+       });
+     }
+ 
+     // Crear el modelo relacionado con tb_producto_marca
+     const newModel = await prisma.tb_modelos.create({
+       data: {
          nombre,
          precio,
          stock,
          descripcion,
-         marca,
-         producto
-      } = req.body;
-
-      let newProduct = null;
-      let newMarca = null;
-      let newProductMarc = null;
-
-      // Verificar si la marca existe, y sino existe que la cree
-      const marcaUnica = await prisma.tb_marca.findUnique({
-         where: { nombre: marca }
-      });
-
-      if (!marcaUnica) {
-         // Crea la marca si no existe
-         newMarca = await prisma.tb_marca.create({
-            data: { nombre: marca }
-         });
-      }
-
-      const productoUnico = await prisma.tb_producto.findUnique({
-         where: { nombre: producto }
-      });
-
-      if (!productoUnico) {
-         // Crea el producto si no existe
-         newProduct = await prisma.tb_producto.create({
-            data: { nombre: producto }
-         });
-      }
-
-      // Crear la relación producto-marca
-      if (!marcaUnica && !productoUnico) {
-         if (newMarca && newProduct) {
-            newProductMarc = await prisma.tb_producto_marca.create({
-               data: {
-                  id_marca: newMarca.id,
-                  id_producto: newProduct.id,
-               }
-            });
-         }
-      } else if (!marcaUnica) {
-         if (newMarca && productoUnico) {
-            newProductMarc = await prisma.tb_producto_marca.create({
-               data: {
-                  id_marca: newMarca.id,
-                  id_producto: productoUnico.id,
-               }
-            });
-         }
-      } else if (!productoUnico) {
-         if (marcaUnica && newProduct) {
-            newProductMarc = await prisma.tb_producto_marca.create({
-               data: {
-                  id_marca: marcaUnica.id,
-                  id_producto: newProduct.id,
-               }
-            });
-         }
-      }
-
-      // Asegurarse de que newProductMarc no sea null
-      if (!newProductMarc) {
-         return res.status(400).json({
-            error: "No se pudo crear la relación producto-marca"
-         });
-      }
-
-      // Crear el modelo
-      const newModel = await prisma.tb_modelos.create({
-         data: {
-            nombre: nombre,
-            precio: precio,
-            stock: stock,
-            descripcion: descripcion,
-            id_producto_marca: newProductMarc.id
-         }
-      });
-
-      res.json(newModel);
+         id_producto_marca: newProductMarc.id, // Relación con tb_producto_marca
+       },
+     });
+ 
+     res.status(201).json(newModel);
    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Ocurrió un error en el servidor" });
+     console.error(error);
+     res.status(500).json({ error: "Ocurrió un error en el servidor" });
    }
-});
+ });
+ 
 
 try {
    app.listen(port, () => {
