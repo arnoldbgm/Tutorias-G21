@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model tb_marca {
+  id                Int                 @id @default(autoincrement())
+  nombre            String              @unique @db.VarChar(255)
+  tb_producto_marca tb_producto_marca[]
+}
+
+model tb_modelos {
+  id                Int               @id @default(autoincrement())
+  nombre            String            @db.VarChar(255)
+  precio            Decimal           @db.Decimal(10, 2)
+  stock             Int
+  descripcion       String?
+  id_producto_marca Int
+  tb_producto_marca tb_producto_marca @relation(fields: [id_producto_marca], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model tb_producto {
+  id                Int                 @id @default(autoincrement())
+  nombre            String              @unique @db.VarChar(255)
+  tb_producto_marca tb_producto_marca[]
+}
+
+model tb_producto_marca {
+  id          Int          @id @default(autoincrement())
+  id_producto Int
+  id_marca    Int
+  tb_modelos  tb_modelos[]
+  tb_marca    tb_marca     @relation(fields: [id_marca], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tb_producto tb_producto  @relation(fields: [id_producto], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
