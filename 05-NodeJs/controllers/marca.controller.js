@@ -12,3 +12,26 @@ export const getAllMarcas = async (req, res) => {
    }
 }
 
+export const createMarca = async (req, res) => {
+   /*
+   req.body
+   {
+     "nombre":"Toshiba"
+   }
+   */
+   try {
+      const { nombre } = req.body;
+      await prisma.tb_marca.create({
+         data: {
+            nombre: nombre
+         }
+      });
+      res.json({ msg: "Marca creada correctamente" });
+   } catch (error) {
+      res.status(500).json({
+         msg: "Ocurrio un error al crear la marca",
+         error
+      });
+   }
+}
+

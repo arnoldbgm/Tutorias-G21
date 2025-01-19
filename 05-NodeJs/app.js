@@ -1,61 +1,22 @@
 import { PrismaClient } from '@prisma/client';
 import express from 'express';
 import marcaRoutes from './routes/marca.routes.js';
+import productRoutes from "./routes/producto.routes.js"
+import modelRoutes from "./routes/modelo.routes.js"
+import cors from 'cors';
 
 const app = express();
-
-// Instancio mi cliente de Prisma
-// Me permite poder usar la ORM de Prisma
-const prisma = new PrismaClient();
 
 const port = 3000;
 
 // Middleware para poder recibir datos en formato JSON
+app.use(cors())
 app.use(express.json());
 
+
 app.use("/api/marca", marcaRoutes)
-
-// app.post("/api/marca", async (req, res) => {
-//    /*
-//    req.body
-//    {
-//      "nombre":"Toshiba"
-//    }
-//    */
-//    const { nombre } = req.body;
-//    await prisma.tb_marca.create({
-//       data: {
-//          nombre: nombre
-//       }
-//    })
-//    res.json({ msg: "Marca creada correctamente" });
-// })
-
-// // RETO 01
-// // Hacer un endpoint para listar todas los productos
-// app.get("/api/producto", async (req, res) => {
-//    const producto = await prisma.tb_producto.findMany()
-//    res.json(producto);
-// })
-
-// // RETO 02
-// // Hacer un endpoint para crear un producto
-// // POST /api/producto
-// app.post("/api/producto", async (req, res) => {
-//    /*
-// req.body
-// {
-//   "nombre":"Audifonos"
-// }
-// */
-//    const { nombre } = req.body;
-//    await prisma.tb_producto.create({
-//       data: {
-//          nombre: nombre
-//       }
-//    })
-//    res.json({ msg: "Producto creado correctamente" });
-// })
+app.use("/api/producto", productRoutes )
+app.use("/api/modelos", modelRoutes)
 
 // app.get("/api/producto-marca", async (req, res) => {
 //    const result = await prisma.tb_producto_marca.findMany({
@@ -67,80 +28,7 @@ app.use("/api/marca", marcaRoutes)
 //    res.json(result);
 // })
 
-// app.post("/api/modelos", async (req, res) => {
-//    /*
-//    req.body
-//    {
-//      "nombre": "8GB RAM, 1TB HDD",
-//      "precio": 5000,
-//      "stock": 10,
-//      "descripcion": "Buena laptop",
-//      "marca": "Acer",
-//      "producto": "Laptop"
-//    }
-//    */
-//    try {
-//      const { nombre, precio, stock, descripcion, marca, producto } = req.body;
- 
-//      let newProductMarc = null;
- 
-//      // Verificar si la marca existe, y sino, crearla
-//      let marcaUnica = await prisma.tb_marca.findUnique({
-//        where: { nombre: marca },
-//      });
- 
-//      if (!marcaUnica) {
-//        marcaUnica = await prisma.tb_marca.create({
-//          data: { nombre: marca },
-//        });
-//      }
- 
-//      // Verificar si el producto existe, y sino, crearlo
-//      let productoUnico = await prisma.tb_producto.findUnique({
-//        where: { nombre: producto },
-//      });
- 
-//      if (!productoUnico) {
-//        productoUnico = await prisma.tb_producto.create({
-//          data: { nombre: producto },
-//        });
-//      }
- 
-//      // Verificar si la relación producto-marca existe, y sino, crearla
-//      newProductMarc = await prisma.tb_producto_marca.findFirst({
-//        where: {
-//          id_marca: marcaUnica.id,
-//          id_producto: productoUnico.id,
-//        },
-//      });
- 
-//      if (!newProductMarc) {
-//        newProductMarc = await prisma.tb_producto_marca.create({
-//          data: {
-//            id_marca: marcaUnica.id,
-//            id_producto: productoUnico.id,
-//          },
-//        });
-//      }
- 
-//      // Crear el modelo relacionado con tb_producto_marca
-//      const newModel = await prisma.tb_modelos.create({
-//        data: {
-//          nombre,
-//          precio,
-//          stock,
-//          descripcion,
-//          id_producto_marca: newProductMarc.id, // Relación con tb_producto_marca
-//        },
-//      });
- 
-//      res.status(201).json(newModel);
-//    } catch (error) {
-//      console.error(error);
-//      res.status(500).json({ error: "Ocurrió un error en el servidor" });
-//    }
-//  });
- 
+
 
 try {
    app.listen(port, () => {
